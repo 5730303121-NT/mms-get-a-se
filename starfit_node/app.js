@@ -87,6 +87,11 @@ hbs.registerHelper('eq', function(val, val2, block) {
     return block.fn();
   }
 });
+hbs.registerHelper('noteq', function(val, val2, block) {
+  if(val != val2){
+    return block.fn();
+  }
+});
 hbs.registerHelper("math", function(lvalue, operator, rvalue, options) {
   lvalue = parseFloat(lvalue);
   rvalue = parseFloat(rvalue);

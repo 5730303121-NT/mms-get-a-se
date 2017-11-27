@@ -70,7 +70,7 @@
     <div class="input-field">
       <label class="mt-3" for="Name">Type</label>
       <select id ="ttype" name="ttype" class="form-control searchbox-text searchbox-dropbox">
-        <option value="0">- เลือกประเภท -</option>
+        <option value="" disabled selected>- เลือกประเภท -</option>
         <option value="1">Body building</option>
         <option value="2">Weight loss</option>
         <option value="3">Cardio</option>
@@ -79,25 +79,33 @@
       </select>
     </div>
 
-
-
     <div class="input-field">
       <label class="mt-3" for="Name">Time slot</label>
       <div id="time-container" class="container">
         {{#each service.timeSlots}}
         <div class="row py-1">
+          <div class="col-sm-4">
           <div class="input-group">
+            {{#eq @index 0}}
              <span class="input-group-btn">
                 <button id="addserv2-rm" class="btn btn-remove" type="button" disabled>
                   <i class="fa fa-trash text-red" aria-hidden="true"></i>
                 </button>
               </span>
-          <div class="col-sm-4">
-            <input class="form-control" id="date[]" type="date" name="date[]" value="{{day}}"  required>
+              {{/eq}}
+              {{#noteq @index 0}}
+             <span class="input-group-btn">
+                <button id="addserv2-rm" class="btn btn-remove" type="button">
+                  <i class="fa fa-trash text-red" aria-hidden="true"></i>
+                </button>
+              </span>
+              {{/noteq}}
+            <input id="showdate-{{@index}}" class="form-control" type="date" name="date[]"required>
+          </div>
           </div>
           <div class="col-sm-4">
-            <select id="time[]" name="time[]" class="form-control searchbox-text searchbox-dropbox" required>
-              <option value="0">---- Select time----</option>
+            <select id="showtime-{{@index}}" name="time[]" class="form-control searchbox-text searchbox-dropbox" required>
+              <option value="" disabled selected>---- Select time----</option>
               <option value="8-9">08:00-09:00</option>
               <option value="9-10">09:00-10:00</option>
               <option value="10-11">10:00-11:00</option>
@@ -115,10 +123,10 @@
             </select>
           </div>
           </div>
+          {{/each}}
         </div>
-        {{/each}}
+        
       </div>
-    </div>
     <button type="button" id="time-btn" class="btn btn-danger mt-1 btn-sm">Add time slot</button>
 
     <div class="input-field">
@@ -127,12 +135,20 @@
         {{#each service.place}}
         <div class="row mt-1">
           <div class="input-group"><span class="input-group-btn">
+            {{#eq @index 0}}
               <button id="addserv-rm" class="btn btn-remove" type="button" disabled>
                 <i class="fa fa-trash text-red" aria-hidden="true"></i>
               </button>
             </span>
-          <select name="location[]" class="form-control searchbox-text searchbox-dropbox" required>
-            <option value="0">- เลือกอำเภอ -</option>
+            {{/eq}}
+             {{#noteq @index 0}}
+              <button id="addserv-rm" class="btn btn-remove" type="button">
+                <i class="fa fa-trash text-red" aria-hidden="true"></i>
+              </button>
+            </span>
+            {{/noteq}}
+          <select id="showplace-{{@index}}" name="location[]" class="form-control searchbox-text searchbox-dropbox" required>
+            <option value="" disabled selected>- เลือกอำเภอ -</option>
             <option value="18">เขตคลองสาน</option>
             <option value="30">เขตจตุจักร </option>
             <option value="35">เขตจอมทอง </option>
@@ -202,12 +218,12 @@
       <div id="addserv-container" class="container">
         <div class="form-row">
           <div class="form-group col-sm-6">
-            <label>Service name</label>
-            <input type="text" class="form-control" name="addserv[]" value="{{name}}">
+            <label>Service name <span id='addserv-rm' class='text-red'><i class='fa fa-trash' aria-hidden='true'></i></span></label>
+            <input type="text" class="form-control" name="addserv[]" value="{{name}}" required>
           </div>
           <div class="form-group col-sm-4">
             <label>Fee</label>
-            <input type="number" class="form-control" name="addprice[]" min="1" max="999999" value={{price}}>
+            <input type="number" class="form-control" name="addprice[]" min="1" max="999999" value={{price}} required>
           </div>
         </div>
       </div>
@@ -230,17 +246,6 @@
 </div>
 
 <script language='javascript' type='text/javascript'>
-    
-    function setSelectedValue(selectObj, valueToSet) {
-    for (var i = 0; i < selectObj.options.length; i++) {
-        if (selectObj.options[i].text== valueToSet) {
-            selectObj.options[i].selected = true;
-            selectObj.selectedIndex = i;
-            return i;
-        }
-    }
-    }
-
     document.addEventListener("DOMContentLoaded", function() {
             var type = document.getElementById("ttype");  
             type.selectedIndex = {{service.ttype}};
@@ -252,16 +257,18 @@
            {{#each service.timeSlots}}
               var t = "{{time.[0]}}-{{time.[1]}}";
               console.log(t);
-              date[{{@index}}].value = "{{day}}";
-              console.log(date[{{@index}}]);
-              setSelectedValue(time[{{@index}}],t);
+              var date = document.getElementById("showdate-"+{{@index}});  
+              var time = document.getElementById("showtime-"+{{@index}});  
+              console.log("{{day}}");
+              date.value = "{{day}}";
+              time.value = t;
            {{/each}}
-
+           
            {{#each service.place}}
-           console.log({{this}})
+           var location = document.getElementById("showplace-"+{{@index}});  
+           console.log("this =============== ",{{this}})
            console.log(location[[{{@index}}]]);
-            setSelectedValue(location[{{@index}}],{{this}});
-            
+           location.value = {{this}};  
            {{/each}}
 
         });

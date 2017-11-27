@@ -111,7 +111,7 @@ router.post('/edit/:sid/update', function (req, res, next) {
     ttype: req.body.ttype,
     about: req.body.about,
     price: req.body.price,
-    //place: req.body.place,
+    place: req.body.place,
   };
 
   var timeSlots = [];
@@ -126,7 +126,7 @@ router.post('/edit/:sid/update', function (req, res, next) {
     timeSlots.push(slot);
     updateservice.status = "available";
   }
-  //updateservice.timeSlots = timeSlots;
+  updateservice.timeSlots = timeSlots;
 
   //additional services
   var addServ = [];
