@@ -218,6 +218,33 @@ router.get('/service/:sid/:picno', function(req, res, next) {
 	});
 });
 
+router.get('/service/:imgid', function(req, res, next) {
+  var imgid = req.params.imgid;
+  console.log("imgid =",imgid)
+  if(imgid == "default"){
+      images.getDefSer(function(err, images) {
+      console.log(images);
+      console.log(__dirname +"/../" + images.path);
+      res.sendFile(path.resolve(__dirname +"/../" + images.path));
+    });
+  }
+  else{
+    images.getImageById(imgid, function(err, images) {
+      if (err) {
+        throw err;
+      }
+      if(images === null){
+        res.send("Services dont have images")
+      }else {
+        // res.download(images.path);
+        // res.download(images.path);
+        console.log(__dirname + "/../" + images.path);
+        res.sendFile(path.resolve(__dirname +"/../" + images.path));
+      }
+    });
+  }
+});
+
 //upload service by service _id
 router.post('/service/:_id/:picno', multer({storage : storageser}).any(), function(req, res, next) {
   var id;
