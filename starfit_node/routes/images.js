@@ -3,8 +3,8 @@ var router = express.Router();
 var multer = require('multer');
 var mongoose = require('mongoose');
 var path = require('path');
-var images = require('../models/images');
 
+var images = require('../models/images');
 var Users = require('../models/users');
 var Services = require('../models/services');
 

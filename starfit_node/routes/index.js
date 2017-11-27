@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var paypal = require('paypal-rest-sdk');
+var crypto = require('crypto');
 
 var Users = require('../models/users');
 var Services = require('../models/services');
@@ -15,6 +16,14 @@ var transporter = nodemailer.createTransport({
 });
 
 const hostname = process.env.HOST_HOSTNAME ? process.env.HOST_HOSTNAME : 'localhost:3000';
+
+var shahash = function (input) {
+  const hash = crypto.createHmac('sha256', input)
+  .update('I love cupcakes')
+  .digest('hex');
+  return hash;
+};
+
 
 var sessionChecker = function (req) {
   if (req.session.user) {
@@ -42,7 +51,7 @@ router.post('/signup', function (req, res, next) {
   var email = req.body.email.toLowerCase();
   var newuser = {
     email: req.body.email.toLowerCase(),
-    password: req.body.password,
+    password: shahash(req.body.password),
     fname: req.body.fname,
     lname: req.body.lname,
     phone: req.body.phone
@@ -92,7 +101,7 @@ router.post('/signup', function (req, res, next) {
 //user login
 router.post('/signin', function (req, res, next) {
   var email = req.body.email.toLowerCase(),
-    password = req.body.password;
+    password = shahash(req.body.password);
   //find one in db
   Users.getUserByE(email, (err, user) => {
     if (err) {
@@ -281,7 +290,7 @@ router.get('/reset/:id/:resetsecret', function (req, res, next) {
 router.post('/reset/:id/:resetsecret', function (req, res, next) {
   var id = req.params.id;
   var resetsecret = req.params.resetsecret;
-  var password = req.body.password;
+  var password = password(req.body.password);
   if (resetsecret == null) {
     res.redirect("/");
     return;
@@ -299,7 +308,7 @@ router.post('/reset/:id/:resetsecret', function (req, res, next) {
     } else {
       //correct secret update new password
       updateUser = {
-        password: password,
+        password: shahash(password),
         secret: null
       };
       Users.updateUser(id, updateUser, null, (err, user) => {
@@ -503,6 +512,8 @@ router.get('/reservation/pay/:rid', function (req, res, next) {
           rid: rid,
           totprice : total
         };
+
+        console.log("create_payment_json======",create_payment_json);
 
         paypal.payment.create(create_payment_json, function (error, payment) {
           if (error) {
