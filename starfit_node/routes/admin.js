@@ -142,12 +142,15 @@ router.get('/delete/:sid/:rev_id', function (req, res, next) {
       }
       Services.getServiceById(sid, (err, result) => {
         var sum_review = 0;
+        console.log("result ====== ", result.reviews)
         if (result.reviews) {
-          var reviews = result.reviews;
-          for (var i = 0; i < reviews.length; i++) {
-            sum_review += reviews[i].rating;
+          if (result.reviews.length > 0) {
+            var reviews = result.reviews;
+            for (var i = 0; i < reviews.length; i++) {
+              sum_review += reviews[i].rating;
+            }
+            sum_review = sum_review / reviews.length;
           }
-          sum_review = sum_review / reviews.length;
         }
         var query2 = {
           "rating": sum_review
