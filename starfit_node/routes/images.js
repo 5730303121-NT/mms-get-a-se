@@ -283,7 +283,7 @@ router.post('/service/:_id/:picno', multer({storage : storageser}).any(), functi
         Services.updateService(id, updateservice, null, (err, service) => {
           console.log("update img");
           req.flash('success', "Update is successful.");
-          res.redirect("/");
+          res.redirect('back');
           if(err){
             console.log(err);
           }
