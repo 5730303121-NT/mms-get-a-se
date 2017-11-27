@@ -111,7 +111,7 @@ router.post('/edit/:sid/update', function (req, res, next) {
     ttype: req.body.ttype,
     about: req.body.about,
     price: req.body.price,
-    place: req.body.place,
+    place: req.body.location
   };
 
   var timeSlots = [];
@@ -130,11 +130,13 @@ router.post('/edit/:sid/update', function (req, res, next) {
 
   //additional services
   var addServ = [];
-  for (var i = 0; i < req.body.addserv.length; i++) {
-    var serv = {};
-    serv.name = req.body.addserv[i];
-    serv.price = req.body.addprice[i];
-    addServ.push(serv);
+  if (req.body.addserv) {
+    for (var i = 0; i < req.body.addserv.length; i++) {
+      var serv = {};
+      serv.name = req.body.addserv[i];
+      serv.price = req.body.addprice[i];
+      addServ.push(serv);
+    }
   }
   updateservice.addServ = addServ;
   console.log("update service = ", JSON.stringify(updateservice));
