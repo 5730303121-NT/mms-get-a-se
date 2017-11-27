@@ -11,6 +11,7 @@ var uuid = require('uuid');
 var flash = require('connect-flash');
 var router = express.Router();
 var dotenv = require('dotenv').config();
+var crypto = require('crypto');
 
 var hbs = require('hbs');
 var cookieSession = require('cookie-session')
