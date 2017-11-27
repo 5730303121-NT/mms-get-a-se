@@ -104,14 +104,14 @@ router.post('/addservice', function (req, res, next) {
 
 
 //update service
-router.post('/:sid/update', function (req, res, next) {
+router.post('/edit/:sid/update', function (req, res, next) {
   var sid = req.params.sid;
-  var updateService = {
+  var updateservice = {
     name: req.body.name,
     ttype: req.body.ttype,
     about: req.body.about,
     price: req.body.price,
-    place: req.body.place,
+    //place: req.body.place,
   };
 
   var timeSlots = [];
@@ -126,7 +126,7 @@ router.post('/:sid/update', function (req, res, next) {
     timeSlots.push(slot);
     updateservice.status = "available";
   }
-  updateservice.timeSlots = timeSlots;
+  //updateservice.timeSlots = timeSlots;
 
   //additional services
   var addServ = [];
@@ -137,15 +137,15 @@ router.post('/:sid/update', function (req, res, next) {
     addServ.push(serv);
   }
   updateservice.addServ = addServ;
-  console.log("update service = ", JSON.stringify(updateService));
-  Services.updateService(sid, updateService, null, (err, user) => {
+  console.log("update service = ", JSON.stringify(updateservice));
+  Services.updateService(sid, updateservice, null, (err, user) => {
     console.log("update");
     if (err) {
       console.log(err);
       req.flash('error', "Something error.");
     }
     req.flash('success', "Update is successful.");
-    res.redirect("/");
+    res.redirect("back");
   });
 });
 
@@ -234,23 +234,4 @@ router.get('/edit/:sid', (req, res, next) => {
   });
 });
 
-router.post('/edit/:sid', (req, res, next) => {
-  var tid = req.session.user.id;
-  var sid = req.params.sid;
-  var updateservice = {
-    name: req.body.name,
-    ttype: req.body.ttype,
-    about: req.body.about,
-    price: req.body.price,
-    tid: req.session.user.id,
-    place: req.body.location,
-    images: ["default", "default", "default"]
-  };
-
-  Services.updateService(sid, updateservice, null, (err, service) => {
-    if (err) {
-      console.log(err)
-    }
-  });
-});
 module.exports = router;
